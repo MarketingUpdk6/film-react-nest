@@ -1,24 +1,39 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
+import { Test, TestingModule } from '@nestjs/testing';
+import { Connection } from 'mongoose';
+import request = require('supertest');
 import { AppModule } from './../src/app.module';
+import { afterAll, beforeAll, describe, expect, it } from '@jest/globals';
 
-describe('AppController (e2e)', () => {
+describe('Afisha API (e2e)', () => {
   let app: INestApplication;
+  let connection: Connection;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.setGlobalPrefix('api/afisha');
+
     await app.init();
+
+    connection = app.get<Connection>('DATABASE_CONNECTION');
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+  afterAll(async () => {
+    await connection.close();
+    await app.close();
+  });
+
+  it('/api/afisha/films (GET)', async () => {
+    const response = await request(app.getHttpServer())
+      .get('/api/afisha/films')
+      .expect(200);
+
+    expect(response.body).toHaveProperty('total');
+    expect(response.body).toHaveProperty('items');
+    expect(Array.isArray(response.body.items)).toBe(true);
   });
 });
