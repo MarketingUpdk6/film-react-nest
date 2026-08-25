@@ -15,6 +15,7 @@ export class OrderService {
         rows: number;
         seats: number;
         taken: Set<string>;
+        places: Set<string>;
       }
     >();
 
@@ -43,6 +44,7 @@ export class OrderService {
           rows: session.rows,
           seats: session.seats,
           taken: new Set(session.taken),
+          places: new Set<string>(),
         };
 
         updates.set(key, update);
@@ -64,12 +66,31 @@ export class OrderService {
       }
 
       update.taken.add(place);
+      update.places.add(place);
     }
 
     for (const update of updates.values()) {
-      await this.filmsRepository.updateTaken(update.filmId, update.sessionId, [
-        ...update.taken,
-      ]);
+      const reserved = await this.filmsRepository.reserveSeats(
+        update.filmId,
+        update.sessionId,
+        [...update.places],
+      );
+
+      if (!reserved) {
+        const film = await this.filmsRepository.findById(update.filmId);
+        const session = film?.schedule.find(
+          (item) => item.id === update.sessionId,
+        );
+        const occupiedPlace = [...update.places].find((place) =>
+          session?.taken.includes(place),
+        );
+
+        throw new BadRequestException(
+          occupiedPlace
+            ? `Место ${occupiedPlace} уже занято`
+            : 'Не удалось забронировать места',
+        );
+      }
     }
 
     const items = order.tickets.map((ticket) => ({

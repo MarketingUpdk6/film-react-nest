@@ -28,24 +28,33 @@ export class MongoFilmsRepository extends FilmsRepository {
 
     return film ? this.toDto(film) : null;
   }
-  async updateTaken(
+  async reserveSeats(
     filmId: string,
     sessionId: string,
-    taken: string[],
-  ): Promise<void> {
-    await this.filmModel
+    places: string[],
+  ): Promise<boolean> {
+    const result = await this.filmModel
       .updateOne(
         {
           id: filmId,
-          'schedule.id': sessionId,
+          schedule: {
+            $elemMatch: {
+              id: sessionId,
+              taken: { $nin: places },
+            },
+          },
         },
         {
-          $set: {
-            'schedule.$.taken': taken,
+          $addToSet: {
+            'schedule.$.taken': {
+              $each: places,
+            },
           },
         },
       )
       .exec();
+
+    return result.modifiedCount === 1;
   }
   private toDto(
     film: HydratedDocument<FilmWithScheduleDto>,

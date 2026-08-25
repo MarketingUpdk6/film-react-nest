@@ -5,9 +5,9 @@ export abstract class FilmsRepository {
 
   abstract findById(id: string): Promise<FilmWithScheduleDto | null>;
 
-  abstract updateTaken(
+  abstract reserveSeats(
     filmId: string,
     sessionId: string,
-    taken: string[],
-  ): Promise<void>;
+    places: string[],
+  ): Promise<boolean>;
 }
