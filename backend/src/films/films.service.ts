@@ -18,6 +18,7 @@ export class FilmsService {
       description: film.description,
       image: film.image,
       cover: film.cover,
+      schedule: film.schedule,
     }));
 
     return {
