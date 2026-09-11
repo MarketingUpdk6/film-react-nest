@@ -94,7 +94,7 @@ export class TypeOrmFilmsRepository extends FilmsRepository {
       schedule: film.schedule.map((session) => ({
         id: session.id,
         daytime: session.daytime,
-        hall: session.hall,
+        hall: String(session.hall),
         rows: session.rows,
         seats: session.seats,
         price: session.price,
