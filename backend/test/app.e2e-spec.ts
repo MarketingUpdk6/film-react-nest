@@ -1,14 +1,12 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './../src/common/filters/http-exception.filter';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Connection } from 'mongoose';
 import request = require('supertest');
 import { AppModule } from './../src/app.module';
 import { afterAll, beforeAll, describe, expect, it } from '@jest/globals';
 
 describe('Afisha API (e2e)', () => {
   let app: INestApplication;
-  let connection: Connection;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -26,12 +24,9 @@ describe('Afisha API (e2e)', () => {
     app.useGlobalFilters(new HttpExceptionFilter());
 
     await app.init();
-
-    connection = app.get<Connection>('DATABASE_CONNECTION');
   });
 
   afterAll(async () => {
-    await connection.close();
     await app.close();
   });
 
