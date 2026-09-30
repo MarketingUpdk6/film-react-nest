@@ -2,13 +2,17 @@
 
 ## Установка
 
-### MongoDB
+### Подготовка PostgreSQL
 
-Установите MongoDB скачав дистрибутив с официального сайта или с помощью пакетного менеджера вашей ОС. Для работы с базой данных можно использовать MongoDB Compass.
+Установите и запустите PostgreSQL.
 
-Создайте базу данных `prac` и коллекцию `films`.
+Создайте пользователя prac и базу данных prac, назначив пользователя владельцем базы. Затем последовательно выполните SQL-запросы из файлов:
 
-Импортируйте фильмы из файла `backend/test/mongodb_initial_stub.json` с помощью MongoDB Compass: откройте коллекцию `films`, выберите **Add Data → Import JSON or CSV file** и укажите файл с тестовыми данными.
+`backend/test/prac.init.sql` — создание таблиц films и schedules;
+`backend/test/prac.films.sql` — заполнение таблицы фильмов;
+`backend/test/prac.shedules.sql` — заполнение таблицы сеансов.
+
+SQL-запросы можно выполнить через Query Tool в pgAdmin, подключившись к базе prac.
 
 ### Бэкенд
 
@@ -16,23 +20,20 @@
 
 `cd backend`
 
-Установите зависимости (точно такие же, как в package-lock.json) помощью команд
+Установите зависимости
 
-`npm ci` или `yarn install --frozen-lockfile`
+`npm ci`
 
 Создайте `.env` файл из примера `.env.example`, в нём укажите:
 
-* `DATABASE_DRIVER` - тип драйвера СУБД - в нашем случае это `mongodb` 
-* `DATABASE_URL` - адрес СУБД MongoDB, например `mongodb://localhost:27017/prac`.
+* `DATABASE_DRIVER` - тип драйвера СУБД - в нашем случае это `postgres`
+* `DATABASE_URL` - адрес СУБД PostgreSQL, например `postgres://localhost:5432/prac`.
+Значения `DATABASE_USERNAME` и `DATABASE_PASSWORD` должны соответствовать данным пользователя
 
-MongoDB должна быть установлена и запущена.
+PostgreSQL должна быть установлена и запущена.
 
 Запустите бэкенд:
 
-`npm run start:debug`
+`npm run start:dev`
 
 Для проверки отправьте тестовый запрос с помощью Postman или `curl`.
-
-
-
-
