@@ -1,5 +1,9 @@
 # FILM!
 
+## Развёрнутое приложение
+
+[Открыть приложение](http://marketingupdk6.front.nomorepartiessite.ru)
+
 ## Установка
 
 ### Подготовка PostgreSQL

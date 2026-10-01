@@ -9,6 +9,9 @@ import { OrderService } from './order/order.service';
 import { FilmsRepository } from './repository/films.repository';
 import { DatabaseModule } from './repository/database.module';
 import { TypeOrmFilmsRepository } from './repository/typeorm-films.repository';
+import { DevLogger } from './logger/dev.logger';
+import { JsonLogger } from './logger/json.logger';
+import { TskvLogger } from './logger/tskv.logger';
 
 @Module({
   imports: [
@@ -24,6 +27,9 @@ import { TypeOrmFilmsRepository } from './repository/typeorm-films.repository';
   ],
   controllers: [FilmsController, OrderController],
   providers: [
+    DevLogger,
+    JsonLogger,
+    TskvLogger,
     FilmsService,
     OrderService,
     {
